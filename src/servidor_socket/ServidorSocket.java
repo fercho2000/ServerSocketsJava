@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Objects;
 
 //b. Elabore un programa socket server que recoja las peticiones de un programa cliente.
 public class ServidorSocket {
@@ -39,6 +40,11 @@ public class ServidorSocket {
     }
 
     private static class EchoClientHandler extends Thread {
+        private static final int POSICION_NUMERO_OPERACION = 0;
+        private static final int POSICION_NUMERO_CUENTA = 1;
+        private static final int POSICION_VALOR_CUENTA = 2;
+        private static final String OPERACION_REGISTRO = "1";
+        private static final String OPERACION_CONSULTA = "2";
         private Socket clientSocket;
         private PrintWriter out;
         private BufferedReader in;
@@ -57,21 +63,31 @@ public class ServidorSocket {
                 out = new PrintWriter(clientSocket.getOutputStream(), true);
                 in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 String inputLine;
+                String numerocuenta = null;
+                String valorCuenta = null;
                 while ((inputLine = in.readLine()) != null) {
                     if (".".equals(inputLine)) {
                         out.println("bye");
                         break;
                     }
                     System.out.println("entra este valor " + inputLine);
-                    String[] arrOfStr = inputLine.split(",");
-                    String numerocuenta = arrOfStr[0];
-                    String valorCuenta = arrOfStr[1];
+                    String[] datosCliente = inputLine.split(",");
+                    String operacion = datosCliente[POSICION_NUMERO_OPERACION];
+                    numerocuenta = datosCliente[POSICION_NUMERO_CUENTA];
 
-                    boolean ingresoRegistro = registroDatosArchivo.guardar(manejadorArchivoTxt.obtenerRutaArchivo(), inputLine);
 
-                    System.out.println(" el numero de la cuenta es: " + numerocuenta + " y el valor es : " + valorCuenta);
 
-                    out.println(ingresoRegistro ? "Registro grabado OK" : "Registro grabado NO-OK");
+                    if (Objects.equals(operacion, OPERACION_REGISTRO)) {
+                        valorCuenta = datosCliente[POSICION_VALOR_CUENTA];
+                        boolean ingresoRegistro = registroDatosArchivo.guardar(manejadorArchivoTxt.obtenerRutaArchivo(), inputLine);
+
+                        System.out.println(" el numero de la cuenta es: " + numerocuenta + " y el valor es : " + valorCuenta);
+
+                        out.println(ingresoRegistro ? "Registro grabado OK" : "Registro grabado NO-OK");
+                    } else if (Objects.equals(operacion, OPERACION_CONSULTA)) {
+                        out.println("Consultando Cuenta número : " + numerocuenta);
+                    }
+
                 }
 
                 in.close();
@@ -89,7 +105,7 @@ public class ServidorSocket {
 
         ServidorSocket server = new ServidorSocket();
         server.start(4444);
-
+        System.out.println("El Servidor se encuentra disponible ....");
     }
 
 }
