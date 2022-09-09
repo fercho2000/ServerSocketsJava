@@ -6,7 +6,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 
+//b. Elabore un programa socket server que recoja las peticiones de un programa cliente.
 public class ServidorSocket {
 
 
@@ -55,6 +57,11 @@ public class ServidorSocket {
                         out.println("bye");
                         break;
                     }
+                    System.out.println("entra este valor "+inputLine);
+                    String[] arrOfStr = inputLine.split(",");
+                    for (String a : arrOfStr)
+                        System.out.println(a);
+                    //System.out.println(Arrays.stream(inputLine.split("=")).findFirst());
                     out.println(inputLine);
                 }
 
@@ -63,7 +70,7 @@ public class ServidorSocket {
                 clientSocket.close();
 
             } catch (IOException e) {
-
+                System.out.println("exception .. ");
             }
         }
     }
@@ -72,7 +79,7 @@ public class ServidorSocket {
         ManejadorArchivoTxt manejadorArchivoTxt = new ManejadorArchivoTxt();
         manejadorArchivoTxt.crearArchivo();
         ServidorSocket server = new ServidorSocket();
-        server.start(5555);
+        server.start(4444);
 
     }
 
