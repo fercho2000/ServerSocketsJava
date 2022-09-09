@@ -17,7 +17,7 @@ public class ManejadorArchivoTxt {
     public void crearArchivo() {
         try {
             if (validarSiExisteArchivo()) {
-                eliminarArchivo();
+                // eliminarArchivo();
                 System.out.println("Se elimino archivo anterior..");
             }
             Files.createFile(Paths.get((obtenerRutaArchivo())));

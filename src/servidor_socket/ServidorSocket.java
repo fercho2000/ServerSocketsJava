@@ -49,7 +49,7 @@ public class ServidorSocket {
         private PrintWriter out;
         private BufferedReader in;
         private ManejadorArchivoTxt manejadorArchivoTxt;
-        private RegistroDatosArchivo registroDatosArchivo;
+        private OperacionesArchivoTxt operacionesArchivoTxt;
 
         public EchoClientHandler(Socket socket) {
             this.clientSocket = socket;
@@ -59,33 +59,36 @@ public class ServidorSocket {
 
         public void run() {
             try {
-                registroDatosArchivo = new RegistroDatosArchivo();
+                operacionesArchivoTxt = new OperacionesArchivoTxt();
                 out = new PrintWriter(clientSocket.getOutputStream(), true);
                 in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 String inputLine;
                 String numerocuenta = null;
                 String valorCuenta = null;
+                String rutaArchivo = manejadorArchivoTxt.obtenerRutaArchivo();
                 while ((inputLine = in.readLine()) != null) {
-                    if (".".equals(inputLine)) {
+                /*    if (".".equals(inputLine)) {
                         out.println("bye");
                         break;
                     }
+                    */
+
                     System.out.println("entra este valor " + inputLine);
                     String[] datosCliente = inputLine.split(",");
                     String operacion = datosCliente[POSICION_NUMERO_OPERACION];
                     numerocuenta = datosCliente[POSICION_NUMERO_CUENTA];
 
 
-
                     if (Objects.equals(operacion, OPERACION_REGISTRO)) {
                         valorCuenta = datosCliente[POSICION_VALOR_CUENTA];
-                        boolean ingresoRegistro = registroDatosArchivo.guardar(manejadorArchivoTxt.obtenerRutaArchivo(), inputLine);
+                        String datosDeRegistro = numerocuenta + "," + valorCuenta;
+                        boolean ingresoRegistro = operacionesArchivoTxt.guardar(rutaArchivo, datosDeRegistro);
 
                         System.out.println(" el numero de la cuenta es: " + numerocuenta + " y el valor es : " + valorCuenta);
 
                         out.println(ingresoRegistro ? "Registro grabado OK" : "Registro grabado NO-OK");
                     } else if (Objects.equals(operacion, OPERACION_CONSULTA)) {
-                        out.println("Consultando Cuenta número : " + numerocuenta);
+                        out.println(operacionesArchivoTxt.consultarCuenta(rutaArchivo, numerocuenta));
                     }
 
                 }
