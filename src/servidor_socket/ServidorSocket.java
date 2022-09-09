@@ -11,15 +11,13 @@ import java.util.Objects;
 //b. Elabore un programa socket server que recoja las peticiones de un programa cliente.
 public class ServidorSocket {
 
-
     private ServerSocket serverSocket;
-
 
     public void start(int port) {
         try {
             serverSocket = new ServerSocket(port);
             while (true)
-                new EchoClientHandler(serverSocket.accept()).start();
+                new ManejadorCliente(serverSocket.accept()).start();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -39,7 +37,7 @@ public class ServidorSocket {
 
     }
 
-    private static class EchoClientHandler extends Thread {
+    private static class ManejadorCliente extends Thread {
         private static final int POSICION_NUMERO_OPERACION = 0;
         private static final int POSICION_NUMERO_CUENTA = 1;
         private static final int POSICION_VALOR_CUENTA = 2;
@@ -48,7 +46,7 @@ public class ServidorSocket {
         private final Socket clientSocket;
         private final ManejadorArchivoTxt manejadorArchivoTxt;
 
-        public EchoClientHandler(Socket socket) {
+        public ManejadorCliente(Socket socket) {
             this.clientSocket = socket;
             manejadorArchivoTxt = new ManejadorArchivoTxt();
             manejadorArchivoTxt.crearArchivo();
@@ -93,14 +91,6 @@ public class ServidorSocket {
                 System.out.println("exception .. ");
             }
         }
-    }
-
-    public static void main(String[] args) {
-
-
-        ServidorSocket server = new ServidorSocket();
-        server.start(4444);
-        System.out.println("El Servidor se encuentra disponible ....");
     }
 
 }
