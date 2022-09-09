@@ -45,11 +45,8 @@ public class ServidorSocket {
         private static final int POSICION_VALOR_CUENTA = 2;
         private static final String OPERACION_REGISTRO = "1";
         private static final String OPERACION_CONSULTA = "2";
-        private Socket clientSocket;
-        private PrintWriter out;
-        private BufferedReader in;
-        private ManejadorArchivoTxt manejadorArchivoTxt;
-        private OperacionesArchivoTxt operacionesArchivoTxt;
+        private final Socket clientSocket;
+        private final ManejadorArchivoTxt manejadorArchivoTxt;
 
         public EchoClientHandler(Socket socket) {
             this.clientSocket = socket;
@@ -59,19 +56,14 @@ public class ServidorSocket {
 
         public void run() {
             try {
-                operacionesArchivoTxt = new OperacionesArchivoTxt();
-                out = new PrintWriter(clientSocket.getOutputStream(), true);
-                in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                OperacionesArchivoTxt operacionesArchivoTxt = new OperacionesArchivoTxt();
+                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 String inputLine;
-                String numerocuenta = null;
-                String valorCuenta = null;
+                String numerocuenta;
+                String valorCuenta;
                 String rutaArchivo = manejadorArchivoTxt.obtenerRutaArchivo();
                 while ((inputLine = in.readLine()) != null) {
-                /*    if (".".equals(inputLine)) {
-                        out.println("bye");
-                        break;
-                    }
-                    */
 
                     System.out.println("entra este valor " + inputLine);
                     String[] datosCliente = inputLine.split(",");

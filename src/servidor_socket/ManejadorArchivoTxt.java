@@ -41,7 +41,7 @@ public class ManejadorArchivoTxt {
         targetFile.delete();
     }
 
-    String obtenerRutaArchivo() throws IOException {
+    String obtenerRutaArchivo() {
         return Paths.get("").toAbsolutePath() + NOMBRE_DEL_ARCHIVO;
     }
 }
